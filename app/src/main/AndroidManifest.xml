@@ -25,7 +25,8 @@
             android:exported="false" />
         <activity
             android:name=".ChatActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity android:name=".AddPostActivity" />
         <activity android:name=".DailyCalendarActivity" />
         <activity android:name=".EventEditActivity" />

@@ -63,6 +63,11 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.O
 
                         return true;
 
+                    case R.id.action_contacts:
+                        startActivity(new Intent(getApplicationContext(), ContactsActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+
                 }
                 return false;
 

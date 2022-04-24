@@ -93,6 +93,10 @@ public class HomeActivity extends AppCompatActivity {
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         overridePendingTransition(0, 0);
                         return true;
+                    case R.id.action_contacts:
+                        startActivity(new Intent(getApplicationContext(), ContactsActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
 
                 }
                 return false;
@@ -143,7 +147,6 @@ public class HomeActivity extends AppCompatActivity {
                     ModelPost modelPost = ds.getValue(ModelPost.class);
 
 
-                    assert modelPost != null;
                     if(modelPost.getpTitle().toLowerCase().contains(searchQuery.toLowerCase()) ||
                             modelPost.getpDescription().toLowerCase().contains(searchQuery.toLowerCase())){
                         postList.add(modelPost);
@@ -238,13 +241,17 @@ public class HomeActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, AddPostActivity.class);
                 startActivity(intent);
                 return true;
-            default:
-                return super.onOptionsItemSelected(item);
+            case R.id.action_search:
+                Intent intent1 = new Intent(this, SettingsActivity.class);
+                startActivity(intent1);
+                return true;
 
             case R.id.action_logout:
                     firebaseAuth.signOut();
                     checkUserStatus();
                     return true;
+            default:
+                return super.onOptionsItemSelected(item);
                 }
         }
     }

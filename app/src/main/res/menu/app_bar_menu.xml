@@ -16,4 +16,8 @@
         android:title="@string/action_chat"
         android:icon="@drawable/ic_chat_24"/>
 
+    <item android:id="@+id/action_contacts"
+        android:title="@string/action_contacts"
+        android:icon="@drawable/ic_people_24"/>
+
 </menu>

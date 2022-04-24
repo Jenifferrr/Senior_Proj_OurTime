@@ -16,6 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calendar.R;
 import com.example.calendar.models.ModelPost;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
@@ -27,9 +32,18 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
     Context context;
     List<ModelPost> postList;
 
+    String myUid;
+
+    private DatabaseReference likesRef; //for likes database node
+    private DatabaseReference postsRef; //reference of posts
+
+    boolean mProcessLike=false;
+
     public AdapterPosts(Context context, List<ModelPost> postList) {
         this.context = context;
         this.postList = postList;
+        likesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
+        postsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
     }
 
     @NonNull
@@ -53,6 +67,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         String pDescription = postList.get(i).getpDescription();
         String pImage = postList.get(i).getpImage();
         String pTimeStamp = postList.get(i).getpTime();
+        String pLikes = postList.get(i).getpLikes();
 
             //convert timestamp to dd/mm/yyyy hh:mm am/pm
         Calendar calendar = Calendar.getInstance(Locale.getDefault());
@@ -64,6 +79,9 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         myHolder.TimeTv.setText(pTime);
         myHolder.TitleTv.setText(pTitle);
         myHolder.DescriptionTv.setText(pDescription);
+        myHolder.LikesTv.setText(pLikes + "Likes");
+        //set likes for each post
+        setLikes(myHolder, pId);
 
 
 
@@ -101,7 +119,38 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         myHolder.likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Like", Toast.LENGTH_SHORT).show();
+                //get total number of likes for the post, whose like button clicked
+                //if currently signed in user has not liked it before
+                //increase value by 1, otherwise decrease value by 1
+                int pLikes = Integer.parseInt(postList.get(i).getpLikes());
+                mProcessLike = true;
+                //get id of the post clicked
+                String postIde = postList.get(i).getpId();
+                likesRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (mProcessLike) {
+                            if (dataSnapshot.child(postIde).hasChild(myUid)) {
+                                //already liked, so remove like
+                                postsRef.child(postIde).child("pLikes").setValue(""+(pLikes-1));
+                                likesRef.child(postIde).child(myUid).removeValue();
+                                mProcessLike = false;
+                            }
+                            else {
+                                //not liked, like it
+                                postsRef.child(postIde).child("pLikes").setValue(""+(pLikes+1));
+                                likesRef.child(postIde).child(myUid).setValue("Liked");
+                                mProcessLike = false;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
 
             }
         });
@@ -120,6 +169,9 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
             }
         });
 
+    }
+
+    private void setLikes(MyHolder myHolder, String pId) {
     }
 
     @Override
