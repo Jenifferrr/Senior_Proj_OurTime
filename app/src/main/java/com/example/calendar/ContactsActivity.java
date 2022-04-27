@@ -182,11 +182,11 @@ public class ContactsActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.home_menu, menu);
+        getMenuInflater().inflate(R.menu.contacts_menu, menu);
         super.onCreateOptionsMenu(menu);
 
         //searchview to search posts by title/description
-        MenuItem item = menu.findItem(R.id.action_search);
+        MenuItem item = menu.findItem(R.id.contacts_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
 
         //search listener
@@ -232,14 +232,11 @@ public class ContactsActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
 
-            case R.id.action_add_post:
-                Intent intent = new Intent(this, AddPostActivity.class);
-                startActivity(intent);
-                return true;
-            case R.id.action_search:
+            case R.id.contacts_search:
                 Intent intent1 = new Intent(this, SettingsActivity.class);
                 startActivity(intent1);
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
