@@ -18,6 +18,7 @@ public class ModelUsers {
         this.cover = cover;
         this.uid = uid;
     }
+    public ModelUsers() {}
 
     public String getName() {
         return name;

@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Calendar">
         <activity
-            android:name=".LoginActivity"
+            android:name=".ContactsActivity"
             android:exported="false" />
         <activity
             android:name=".RegisterActivity"
@@ -21,25 +21,30 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".FirstScreen"
+            android:name=".LoginActivity"
             android:exported="false" />
         <activity
             android:name=".ChatActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
-        <activity android:name=".AddPostActivity" />
+        <activity android:name=".AddPostActivity"
+            android:exported="true"/>
         <activity android:name=".DailyCalendarActivity" />
         <activity android:name=".EventEditActivity" />
         <activity android:name=".WeekViewActivity" />
-        <activity
-            android:name=".HomeActivity"
+        <activity android:name=".FirstScreen"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+    <activity
+        android:name=".HomeActivity"
+        android:exported="true">
+    </activity>
     </application>
 
 </manifest>

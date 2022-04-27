@@ -176,6 +176,10 @@ public class ChatActivity extends AppCompatActivity {
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         overridePendingTransition(0, 0);
                         return true;
+                    case R.id.action_contacts:
+                        startActivity(new Intent(getApplicationContext(), ContactsActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
 
                 }
                 return false;
@@ -258,11 +262,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onStart();
         }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        userRefForSeen.removeEventListener(seenListener);
-    }
+
 
     @Override
         public boolean onCreateOptionsMenu(Menu menu) {

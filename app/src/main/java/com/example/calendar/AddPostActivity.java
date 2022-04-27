@@ -107,6 +107,7 @@ public class AddPostActivity extends AppCompatActivity {
         pd = new ProgressDialog(this);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        checkUserStatus();
 
         actionBar.setSubtitle(email);
 
@@ -274,6 +275,7 @@ public class AddPostActivity extends AppCompatActivity {
             hashMap.put("pDescription", description);
             hashMap.put("pImage", "noImage");
             hashMap.put("pTime", timeStamp);
+
 
             //path to store post data
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
@@ -465,15 +467,29 @@ public class AddPostActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        checkUserStatus();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        checkUserStatus();
 
     }
 
-
+    private void checkUserStatus() {
+        //get current user
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user != null) {
+            //user is signed in stay here
+            email = user.getEmail();
+            uid = user.getUid();
+        } else {
+            //user not signed in, go to FirstScreen
+            startActivity(new Intent(this, FirstScreen.class));
+            finish();
+        }
+    }
 
 
     @Override
@@ -489,6 +505,7 @@ public class AddPostActivity extends AppCompatActivity {
 
 
         menu.findItem(R.id.action_add_post).setVisible(false);
+        menu.findItem(R.id.action_search).setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -498,6 +515,7 @@ public class AddPostActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id ==R.id.action_logout) {
             firebaseAuth.signOut();
+            checkUserStatus();
 
         }
 

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -40,7 +41,7 @@ public class ContactsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
+        setContentView(R.layout.activity_contacts);
 
         //init
         firebaseAuth = FirebaseAuth.getInstance();
@@ -59,28 +60,28 @@ public class ContactsActivity extends AppCompatActivity {
 
         /////bottom nav bar
         bottomNavigationView = findViewById(R.id.bottom_navigator);
-        bottomNavigationView.setSelectedItemId(R.id.action_chat);
+        bottomNavigationView.setSelectedItemId(R.id.action_contacts);
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener(){
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                switch (item.getItemId())
-                {
+                switch (item.getItemId()) {
                     case R.id.action_chat:
                         startActivity(new Intent(getApplicationContext(), ChatActivity.class));
-                        overridePendingTransition(0,0);
+                        overridePendingTransition(0, 0);
                         return true;
 
                     case R.id.action_home:
                         startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-                        overridePendingTransition(0,0);
+                        overridePendingTransition(0, 0);
                         return true;
 
                     case R.id.action_calendar:
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        overridePendingTransition(0,0);
+                        overridePendingTransition(0, 0);
                         return true;
+
                     case R.id.action_contacts:
 
                         return true;
@@ -96,18 +97,18 @@ public class ContactsActivity extends AppCompatActivity {
     private void getAllUsers() {
         // get current user
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        //get path of database named "Users" containign users info
+        //get path of database named "Users" containing users info
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
         //get all data from path
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 usersList.clear();
-                for (DataSnapshot ds: dataSnapshot.getChildren()){
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     ModelUsers modelUsers = ds.getValue(ModelUsers.class);
 
                     //get all users except currently signe in user
-                    if (!modelUsers.getUid().equals(firebaseUser.getUid())){
+                    if (!modelUsers.getUid().equals(firebaseUser.getUid())) {
                         usersList.add(modelUsers);
                     }
                     //adapter
@@ -129,18 +130,18 @@ public class ContactsActivity extends AppCompatActivity {
     private void searchUsers(String query) {
         // get current user
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        //get path of database named "Users" containign users info
+        //get path of database named "Users" containing users info
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
         //get all data from path
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 usersList.clear();
-                for (DataSnapshot ds: dataSnapshot.getChildren()){
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     ModelUsers modelUsers = ds.getValue(ModelUsers.class);
 
-                    //get all searchedusers except currently signe in user
-                    if (!modelUsers.getUid().equals(firebaseUser.getUid())){
+                    //get all searched users except currently signed in user
+                    if (!modelUsers.getUid().equals(firebaseUser.getUid())) {
 
                         if (modelUsers.getName().toLowerCase().contains(query.toLowerCase()) ||
                                 modelUsers.getEmail().toLowerCase().contains(query.toLowerCase())) {
@@ -165,10 +166,24 @@ public class ContactsActivity extends AppCompatActivity {
         });
     }
 
+    private void checkUserStatus() {
+        //get current user
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user != null) {
+            //user is signed in stay here
+        } else {
+            //user not signed in, go to FirstScreen
+            startActivity(new Intent(getApplicationContext(), FirstScreen.class));
+            finish();
+        }
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.home_menu, menu);
+        super.onCreateOptionsMenu(menu);
 
         //searchview to search posts by title/description
         MenuItem item = menu.findItem(R.id.action_search);
@@ -183,8 +198,7 @@ public class ContactsActivity extends AppCompatActivity {
                 if (!TextUtils.isEmpty(s.trim())) {
                     //search text contains text, search it
                     searchUsers(s);
-                }
-                else {
+                } else {
                     //search text empty, get all users
                     getAllUsers();
                 }
@@ -198,8 +212,7 @@ public class ContactsActivity extends AppCompatActivity {
                 if (!TextUtils.isEmpty(s.trim())) {
                     //search text contains text, search it
                     searchUsers(s);
-                }
-                else {
+                } else {
                     //search text empty, get all users
                     getAllUsers();
                 }
@@ -208,14 +221,17 @@ public class ContactsActivity extends AppCompatActivity {
             }
         });
 
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
+
+
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
+
             case R.id.action_add_post:
                 Intent intent = new Intent(this, AddPostActivity.class);
                 startActivity(intent);

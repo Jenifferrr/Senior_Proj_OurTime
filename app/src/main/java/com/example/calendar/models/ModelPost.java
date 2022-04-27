@@ -1,8 +1,9 @@
 package com.example.calendar.models;
 
 public class ModelPost {
-//use same name as given while uploading post
+    //use same name as given while uploading post
     String pId, pTitle, pDescription, pLikes, pImage, pTime, uid, uEmail, uDp, uName;
+
 
     public ModelPost() {
     }

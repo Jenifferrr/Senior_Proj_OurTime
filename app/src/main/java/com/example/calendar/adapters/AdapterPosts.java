@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.calendar.R;
 import com.example.calendar.models.ModelPost;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,6 +43,8 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
     public AdapterPosts(Context context, List<ModelPost> postList) {
         this.context = context;
         this.postList = postList;
+
+        myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         likesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
         postsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
     }
@@ -125,7 +128,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                 int pLikes = Integer.parseInt(postList.get(i).getpLikes());
                 mProcessLike = true;
                 //get id of the post clicked
-                String postIde = postList.get(i).getpId();
+               final String postIde = postList.get(i).getpId();
                 likesRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -171,7 +174,27 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
 
     }
 
-    private void setLikes(MyHolder myHolder, String pId) {
+    private void setLikes(final MyHolder holder,final String postKey) {
+        likesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child(postKey).hasChild(myUid)) {
+                    //user has liked this post
+                    holder.likeButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_liked, 0,0,0);
+                    holder.likeButton.setText("Liked");
+                }
+                else {
+                    //user has not liked this post
+                    holder.likeButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_like_black, 0,0,0);
+                    holder.likeButton.setText("Like");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override

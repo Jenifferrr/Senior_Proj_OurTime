@@ -64,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/chatLayout"
         android:layout_below="@+id/toolbar"
-        android:background="@color/white" >
+        android:background="@color/white">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -105,14 +105,13 @@
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/bottom_navigator"
-        app:itemBackground="@color/blue_200"
-        app:itemTextColor="@drawable/selector"
-        app:itemIconTint="@drawable/selector"
-        app:menu="@menu/app_bar_menu"
         android:layout_alignParentBottom="true"
-        />
+        app:itemBackground="@color/blue_200"
+        app:itemIconTint="@drawable/selector"
+        app:itemTextColor="@drawable/selector"
+        app:menu="@menu/app_bar_menu" />
 
 </RelativeLayout>
